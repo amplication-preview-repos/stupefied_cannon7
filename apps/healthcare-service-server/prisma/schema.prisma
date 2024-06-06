@@ -1,0 +1,43 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Patient {
+  appointments Appointment[]
+  createdAt    DateTime           @default(now())
+  dob          DateTime?
+  gender       EnumPatientGender?
+  id           String             @id @default(cuid())
+  name         String?
+  problem      String?
+  updatedAt    DateTime           @updatedAt
+}
+
+model Doctor {
+  appointments   Appointment[]
+  createdAt      DateTime      @default(now())
+  id             String        @id @default(cuid())
+  name           String?
+  specialization String?
+  updatedAt      DateTime      @updatedAt
+}
+
+model Appointment {
+  createdAt DateTime  @default(now())
+  dateTime  DateTime?
+  doctor    Doctor?   @relation(fields: [doctorId], references: [id])
+  doctorId  String?
+  id        String    @id @default(cuid())
+  patient   Patient?  @relation(fields: [patientId], references: [id])
+  patientId String?
+  updatedAt DateTime  @updatedAt
+}
+
+enum EnumPatientGender {
+  Option1
+}
